@@ -14,12 +14,14 @@ app.listen(9774, function(err) {
 });
 
 app.get('/video', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
     if (res.writable) {
         res.download(path.resolve(__dirname, './assets/firework.mp4'));
     }
 });
 
 app.get('/danmaku', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
     if (res.writable) {
         res.download(path.resolve(__dirname, './assets/firework.xml'));
     }

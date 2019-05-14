@@ -1,0 +1,10 @@
+<app-video></app-video>
+
+<section *ngFor="let danmakus of danmakusPool" class="danmakuColumn">
+    <app-danmaku
+        *ngFor="let danmaku of danmakus"
+        (animationend)="animationEnd()"
+        [data]="danmaku"
+    >
+    </app-danmaku>
+</section>

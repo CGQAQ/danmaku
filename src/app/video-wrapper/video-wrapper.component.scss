@@ -1,0 +1,15 @@
+:host {
+    position: relative;
+    overflow: hidden;
+}
+
+.danmakuColumn {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    z-index: 25;
+}

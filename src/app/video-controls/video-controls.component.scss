@@ -1,0 +1,68 @@
+:host {
+    height: 3rem;
+    display: grid;
+    grid-template-rows: 1fr 2fr;
+    justify-content: stretch;
+
+    background: black;
+    position: relative;
+}
+
+.progress {
+    display: flex;
+    justify-content: center;
+    background: white;
+    width: 100%;
+}
+
+.progress-wrapper {
+    grid-row: 1;
+    width: 100%;
+    position: relative;
+}
+
+.progress-buffered {
+    background: grey;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+}
+
+.progress-played {
+    position: absolute;
+    background: cyan;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    z-index: 20;
+}
+
+.progress-thumb {
+    position: absolute;
+    align-self: center;
+    background: url(https://picsum.photos/50);
+    left: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    z-index: 120;
+    transform: translateX(-50%);
+
+    &:hover {
+        cursor: grab;
+    }
+}
+
+.control-bottom {
+    grid-row: 2;
+    background: green;
+    z-index: 100;
+}
+
+.control-btn-play {
+    width: 2rem;
+    height: 2rem;
+    margin: 2px;
+}

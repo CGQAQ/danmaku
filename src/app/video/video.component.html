@@ -1,0 +1,21 @@
+<video
+    #videoElement
+    [src]="video"
+    (timeupdate)="ontimeupdate($event)"
+    (durationchange)="durationchange($event)"
+    (canplay)="canplay($event)"
+    (play)="playBegun()"
+    (playing)="playBegun()"
+    (pause)="playPaused()"
+    (waiting)="playWaiting()"
+    controls
+></video>
+<app-video-controls
+    #appVideoControls
+    [videoTime]="currentTime"
+    [videoTotalTime]="totalTime"
+    [videoElement]="videoElement"
+    [isPlaying]="isPlaying"
+    (btnPlayClickEmitter)="btnPlayClick()"
+    (seek)="onSeek($event)"
+></app-video-controls>

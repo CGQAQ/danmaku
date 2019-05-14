@@ -1,0 +1,18 @@
+:host {
+    position: relative;
+    left: 90vw;
+    width: fit-content;
+    background: white;
+    padding: 1px;
+    white-space: pre;
+    animation-name: move-left;
+    animation-duration: 8s;
+    animation-timing-function: linear;
+    margin: 1px 0px;
+}
+
+@keyframes move-left {
+    to {
+        transform: translateX(calc(-150vw));
+    }
+}
