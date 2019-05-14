@@ -13,6 +13,7 @@ import {
     CreateDanmakuObservableReturnType
 } from '../Observables/danmaku';
 import { Observable } from 'rxjs';
+import { PlayService } from '../services/play-service.service';
 
 type Video = string;
 
@@ -28,14 +29,16 @@ export class VideoComponent implements OnInit {
     @ViewChild('appVideoControls')
     appVideoControls: ElementRef;
 
-    video: Video = this.danmaku._sources.video;
+    video: Video = this.danmakuService._sources.video;
     danmakuObj: BilibiliDanmaku;
     danmakuObservables: CreateDanmakuObservableReturnType;
     currentTime: number = 0;
     totalTime: number;
 
-    isPlaying: boolean = false;
-    constructor(private danmaku: DanmakuService) {}
+    constructor(
+        private danmakuService: DanmakuService,
+        private playService: PlayService
+    ) {}
 
     canplay(e) {
         this.totalTime = e.target.duration;
@@ -44,7 +47,7 @@ export class VideoComponent implements OnInit {
     ontimeupdate(e) {
         this.currentTime = e.target.currentTime;
         this.danmakuObservables.danmaku$.subscribe(d => {
-            this.danmaku.danmakuMachine.send(d);
+            this.danmakuService.danmakuMachine.send(d);
         });
     }
 
@@ -52,28 +55,18 @@ export class VideoComponent implements OnInit {
         this.totalTime = e.target.duration;
     }
 
-    btnPlayClick() {
-        // console.log('press', this.isPlaying);
-        if (this.isPlaying) {
-            this.videoEle.nativeElement.pause();
-        } else {
-            this.videoEle.nativeElement.play();
-        }
-        this.isPlaying = !this.isPlaying;
-    }
-
     playBegun() {
-        this.isPlaying = true;
+        this.playService.isPlaying.next(true);
         // console.log('begun');
     }
 
     playPaused() {
-        this.isPlaying = false;
+        this.playService.isPlaying.next(false);
         // console.log('playPaused');
     }
 
     playWaiting() {
-        this.isPlaying = false;
+        this.playService.isPlaying.next(false);
         // console.log('playWaiting');
     }
 
@@ -82,12 +75,13 @@ export class VideoComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.danmaku.getDanmakus().subscribe(d => {
+        this.danmakuService.getDanmakus().subscribe(d => {
             this.danmakuObservables = createDanmakuObservable(
                 this.videoEle.nativeElement,
                 d
             );
         });
-        this.totalTime = this.videoEle.nativeElement.t;
+        this.totalTime = this.videoEle.nativeElement.currentTime;
+        this.playService.videoEle = this.videoEle.nativeElement;
     }
 }

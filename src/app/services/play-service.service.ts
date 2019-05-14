@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PlayServiceService {
-    _videoEle: HTMLVideoElement;
+export class PlayService {
+    private _videoEle: HTMLVideoElement;
+    private _isPlaying: Subject<boolean> = new Subject();
 
     constructor() {}
 
@@ -16,9 +18,21 @@ export class PlayServiceService {
         this._videoEle = v;
     }
 
+    public get isPlaying() {
+        return this._isPlaying;
+    }
+
     public seek(to: number) {
         if (to >= 0 && to <= this._videoEle.duration) {
             this._videoEle.currentTime = to;
         }
+    }
+
+    public play() {
+        this.videoEle.play();
+    }
+
+    public pause() {
+        this.videoEle.pause();
     }
 }

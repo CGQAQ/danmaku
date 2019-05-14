@@ -4,9 +4,11 @@ import {
     Input,
     OnChanges,
     EventEmitter,
-    Output
+    Output,
+    ChangeDetectorRef
 } from '@angular/core';
 import { NgStyle } from '@angular/common';
+import { PlayService } from '../services/play-service.service';
 
 @Component({
     selector: 'app-video-controls',
@@ -17,24 +19,30 @@ export class VideoControlsComponent implements OnInit, OnChanges {
     @Input() videoTotalTime: number;
     @Input() videoTime: number;
     @Input() videoElement: HTMLVideoElement;
-    @Input() isPlaying: boolean;
-    @Output() seek: EventEmitter<number> = new EventEmitter();
-    @Output() btnPlayClickEmitter: EventEmitter<any> = new EventEmitter();
 
     progressBufferedStyle;
     progressPlayedStyle;
     progressThumbStyle;
 
     isDragging: boolean = false;
+    isPlaying: boolean = false;
 
     btnPlayBackground = `url(../../assets/play.png)`;
 
-    constructor() {}
+    constructor(
+        private playService: PlayService,
+        private cdr: ChangeDetectorRef
+    ) {}
 
     ngOnInit() {
         this.progressPlayedStyle = {
             width: (this.videoTime / this.videoTotalTime) * 100 + '%'
         };
+        this.playService.isPlaying.subscribe(b => {
+            this.isPlaying = b;
+            this.cdr.detectChanges();
+            console.log(this.isPlaying, b);
+        });
     }
 
     ngOnChanges() {
@@ -47,10 +55,16 @@ export class VideoControlsComponent implements OnInit, OnChanges {
         this.btnPlayBackground = this.isPlaying
             ? `url(../../assets/pause.png)`
             : `url(../../assets/play.png)`;
+        console.log(this.isPlaying);
     }
 
     btnPlayClick() {
-        this.btnPlayClickEmitter.emit();
+        if (this.isPlaying) {
+            this.playService.pause();
+        } else {
+            this.playService.play();
+        }
+        // this.cdr.detectChanges();
     }
 
     onmousedown() {
@@ -61,7 +75,7 @@ export class VideoControlsComponent implements OnInit, OnChanges {
     onmousemove(e: MouseEvent) {
         if (this.isDragging) {
             console.log('onmousemove', e.movementX);
-            e.movementX / this.videoElement;
+            // let a = e.movementX / this.videoElement;
         }
     }
     onmouseup() {
