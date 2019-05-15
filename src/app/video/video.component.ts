@@ -3,16 +3,11 @@ import {
     OnInit,
     ElementRef,
     ViewChild,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy,
+    Input
 } from '@angular/core';
 import { DanmakuService } from '../services/danmaku.service';
-import { BilibiliDanmaku } from '../types/danmaku';
 
-import {
-    createDanmakuObservable,
-    CreateDanmakuObservableReturnType
-} from '../Observables/danmaku';
-import { Observable } from 'rxjs';
 import { PlayService } from '../services/play-service.service';
 
 type Video = string;
@@ -29,9 +24,8 @@ export class VideoComponent implements OnInit {
     @ViewChild('appVideoControls')
     appVideoControls: ElementRef;
 
-    video: Video = this.danmakuService._sources.video;
-    danmakuObj: BilibiliDanmaku;
-    danmakuObservables: CreateDanmakuObservableReturnType;
+    @Input() videoSrc: string;
+
     currentTime: number = 0;
     totalTime: number;
 
@@ -46,9 +40,7 @@ export class VideoComponent implements OnInit {
 
     ontimeupdate(e) {
         this.currentTime = e.target.currentTime;
-        this.danmakuObservables.danmaku$.subscribe(d => {
-            this.danmakuService.danmakuMachine.send(d);
-        });
+        this.danmakuService.danmakuMachine.currentTime = this.currentTime;
     }
 
     durationchange(e) {
@@ -75,12 +67,6 @@ export class VideoComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.danmakuService.getDanmakus().subscribe(d => {
-            this.danmakuObservables = createDanmakuObservable(
-                this.videoEle.nativeElement,
-                d
-            );
-        });
         this.totalTime = this.videoEle.nativeElement.currentTime;
         this.playService.videoEle = this.videoEle.nativeElement;
     }

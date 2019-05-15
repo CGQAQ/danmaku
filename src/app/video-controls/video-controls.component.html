@@ -1,14 +1,18 @@
 <div class="progress">
-    <div class="progress-wrapper">
+    <div class="progress-wrapper" #progress>
         <div class="progress-buffered" [ngStyle]="progressBufferedStyle"></div>
-        <div class="progress-played" [ngStyle]="progressPlayedStyle"></div>
+        <div
+            #progressplayed
+            class="progress-played"
+            [ngStyle]="progressPlayedStyle"
+        ></div>
     </div>
     <div
         class="progress-thumb"
         [ngStyle]="progressThumbStyle"
         (mousedown)="onmousedown()"
         (mousemove)="onmousemove($event)"
-        (mouseup)="onmouseup()"
+        (mouseup)="onmouseup($event)"
         (mouseout)="onmouseout()"
     ></div>
 </div>

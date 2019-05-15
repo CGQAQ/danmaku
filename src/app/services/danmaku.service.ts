@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { xml2js } from 'xml-js';
-import { BilibiliDanmaku } from '../types/danmaku';
-import { DanmakuMachine } from '../lib/danmaku';
+import { BilibiliDanmaku } from '../lib/types/danmaku';
+import { DanmakuMachine } from '../lib/danmakuMachine';
 
 const res = {
     video: 'http://localhost:9774/video',
@@ -16,12 +16,16 @@ const res = {
     providedIn: 'root'
 })
 export class DanmakuService {
-    _danmakuObj: Observable<string>;
-    _sources = res;
-    _danmakuMachine: DanmakuMachine;
+    private _danmakuObj: Observable<string>;
+    private _sources = res;
+    private _danmakuMachine: DanmakuMachine;
     constructor(private http: HttpClient) {
         this._danmakuObj = http.get(res.danmaku, { responseType: 'text' });
         this._danmakuMachine = new DanmakuMachine(this.getDanmakus());
+    }
+
+    get source() {
+        return this._sources;
     }
 
     getDanmakus() {

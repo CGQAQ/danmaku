@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BilibiliDanmaku } from '../types/danmaku';
+import { BilibiliDanmaku } from '../lib/types/danmaku';
 
 @Component({
     selector: 'app-danmaku',

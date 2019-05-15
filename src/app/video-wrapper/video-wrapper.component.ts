@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { BilibiliDanmaku } from '../types/danmaku';
+import { BilibiliDanmaku } from '../lib/types/danmaku';
 import { DanmakuService } from '../services/danmaku.service';
 
 @Component({
@@ -10,6 +10,8 @@ import { DanmakuService } from '../services/danmaku.service';
 export class VideoWrapperComponent implements OnInit {
     danmakusPool: BilibiliDanmaku[][] = [];
     counter: number = 0;
+
+    videoSrc = this.danmakuService.source.video;
 
     constructor(
         private danmakuService: DanmakuService,
@@ -41,19 +43,21 @@ export class VideoWrapperComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.danmakuService.danmakuMachine.state.subscribe(d => {
+        this.danmakuService.danmakuMachine.danmakuStream.subscribe(d => {
             // console.log(this);
             if (this.danmakusPool.length === 0) {
-                this.danmakusPool[0] = d;
+                this.danmakusPool.push([d]);
             } else if (this.danmakusPool.length > 0) {
                 // this.danmakusPool.push(d);
                 if (
                     Math.abs(
                         this.danmakusPool[this.danmakusPool.length - 1][0]
-                            .time - d[0].time
+                            .time - d.time
                     ) < 1
                 ) {
-                    this.danmakusPool[this.danmakusPool.length - 1].push(...d);
+                    this.danmakusPool[this.danmakusPool.length - 1].push(d);
+                } else {
+                    this.danmakusPool.push([d]);
                 }
             }
             this.cdr.detectChanges();
