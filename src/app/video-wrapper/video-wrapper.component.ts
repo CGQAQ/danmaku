@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BilibiliDanmaku } from '../lib/types/danmaku';
 import { DanmakuService } from '../services/danmaku.service';
+import { PlayService } from '../services/play-service.service';
 
 @Component({
     selector: 'app-video-wrapper',
@@ -11,10 +12,13 @@ export class VideoWrapperComponent implements OnInit {
     danmakusPool: BilibiliDanmaku[][] = [];
     counter: number = 0;
 
+    _danmakuOngoing = true;
+
     videoSrc = this.danmakuService.source.video;
 
     constructor(
         private danmakuService: DanmakuService,
+        private playService: PlayService,
         private cdr: ChangeDetectorRef
     ) {}
 
@@ -64,5 +68,9 @@ export class VideoWrapperComponent implements OnInit {
         });
         // window.dan = this.danmakuService.danmakuMachine;
         // window.t = this.danmakusPool;
+
+        this.playService.isPlaying.subscribe(
+            isPlay => (this._danmakuOngoing = isPlay)
+        );
     }
 }

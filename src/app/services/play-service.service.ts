@@ -29,10 +29,15 @@ export class PlayService {
         this._timeChange.subscribe(t => {
             this._currentTime = t;
         });
+
+        v.addEventListener('play', this.playBegun.bind(this));
+        v.addEventListener('playing', this.playBegun.bind(this));
+        v.addEventListener('pause', this.playPaused.bind(this));
+        v.addEventListener('waiting', this.playWaiting.bind(this));
     }
 
     public get isPlaying() {
-        return this._isPlaying;
+        return this._isPlaying.asObservable();
     }
 
     public seek(to: number) {
@@ -59,7 +64,21 @@ export class PlayService {
     }
 
     public get currentTime() {
-        console.log(this._currentTime);
         return this._currentTime;
+    }
+
+    private playBegun() {
+        this._isPlaying.next(true);
+        // console.log('begun');
+    }
+
+    private playPaused() {
+        this._isPlaying.next(false);
+        // console.log('playPaused');
+    }
+
+    private playWaiting() {
+        this._isPlaying.next(false);
+        // console.log('playWaiting');
     }
 }

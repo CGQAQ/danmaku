@@ -5,6 +5,7 @@
         *ngFor="let danmaku of danmakus"
         (animationend)="animationEnd()"
         [data]="danmaku"
+        [ongoing]="_danmakuOngoing"
     >
     </app-danmaku>
 </section>
