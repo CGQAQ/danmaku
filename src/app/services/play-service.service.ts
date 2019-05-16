@@ -36,7 +36,7 @@ export class PlayService {
     }
 
     public seek(to: number) {
-        console.log(to, this._videoEle.currentTime);
+        // console.log(to, this._videoEle.currentTime);
         if (to >= 0 && to <= this._videoEle.duration) {
             this._videoEle.currentTime = to;
         }

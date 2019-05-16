@@ -8,9 +8,10 @@ import { VideoComponent } from './video/video.component';
 import { VideoWrapperComponent } from './video-wrapper/video-wrapper.component';
 import { DanmakuComponent } from './danmaku/danmaku.component';
 import { VideoControlsComponent } from './video-controls/video-controls.component';
+import { ProgressbarComponent } from './progressbar/progressbar.component';
 
 @NgModule({
-    declarations: [AppComponent, VideoComponent, VideoWrapperComponent, DanmakuComponent, VideoControlsComponent],
+    declarations: [AppComponent, VideoComponent, VideoWrapperComponent, DanmakuComponent, VideoControlsComponent, ProgressbarComponent],
     imports: [BrowserModule, AppRoutingModule, HttpClientModule],
     providers: [],
     bootstrap: [AppComponent]

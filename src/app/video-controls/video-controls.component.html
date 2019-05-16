@@ -1,20 +1,9 @@
-<div class="progress">
-    <div class="progress-wrapper" #progress>
-        <div class="progress-buffered" [ngStyle]="progressBufferedStyle"></div>
-        <div
-            #progressplayed
-            class="progress-played"
-            [ngStyle]="progressPlayedStyle"
-        ></div>
-    </div>
-    <div
-        class="progress-thumb"
-        [ngStyle]="progressThumbStyle"
-        (mousedown)="onmousedown()"
-        (mousemove)="onmousemove($event)"
-        (mouseup)="onmouseup($event)"
-        (mouseout)="onmouseout()"
-    ></div>
+<div class="control-top">
+    <app-progressbar
+        [max]="videoTotalTime"
+        [value]="videoTime"
+        (valueChange)="onSeek($event)"
+    ></app-progressbar>
 </div>
 <div class="control-bottom">
     <button

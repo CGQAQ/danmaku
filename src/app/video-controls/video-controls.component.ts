@@ -8,7 +8,8 @@ import {
     ChangeDetectorRef,
     SimpleChanges,
     ElementRef,
-    ViewChild
+    ViewChild,
+    HostListener
 } from '@angular/core';
 import { NgStyle } from '@angular/common';
 import { PlayService } from '../services/play-service.service';
@@ -18,18 +19,9 @@ import { PlayService } from '../services/play-service.service';
     templateUrl: './video-controls.component.html',
     styleUrls: ['./video-controls.component.scss']
 })
-export class VideoControlsComponent implements OnInit, OnChanges {
+export class VideoControlsComponent implements OnInit {
     @Input() videoTotalTime: number;
     @Input() videoTime: number;
-    @Input() videoElement: HTMLVideoElement;
-    @ViewChild('progress') progressRef: ElementRef<HTMLDivElement>;
-    @ViewChild('progressplayed') progressplayedRef: ElementRef<HTMLDivElement>;
-
-    @Output() progressbarDragged: EventEmitter<number> = new EventEmitter();
-
-    progressBufferedStyle;
-    progressPlayedStyle;
-    progressThumbStyle;
 
     isDragging: boolean = false;
     _isPlaying: boolean = false;
@@ -51,9 +43,6 @@ export class VideoControlsComponent implements OnInit, OnChanges {
     ) {}
 
     ngOnInit() {
-        this.progressPlayedStyle = {
-            width: (this.videoTime / this.videoTotalTime) * 100 + '%'
-        };
         this.playService.isPlaying.subscribe(b => {
             this.isPlaying = b;
             this.btnPlayBackground = b
@@ -62,14 +51,8 @@ export class VideoControlsComponent implements OnInit, OnChanges {
         });
     }
 
-    ngOnChanges() {
-        this.progressPlayedStyle = {
-            width: (this.videoTime / this.videoTotalTime) * 100 + '%'
-        };
-        this.progressThumbStyle = {
-            left: `calc(${(this.videoTime / this.videoTotalTime) * 100}%)`
-        };
-        // console.log(this.isPlaying);
+    onSeek(e) {
+        this.playService.seek(e)
     }
 
     btnPlayClick() {
@@ -78,32 +61,5 @@ export class VideoControlsComponent implements OnInit, OnChanges {
         } else {
             this.playService.play();
         }
-    }
-
-    onmousedown() {
-        window;
-        this.isDragging = true;
-        // console.log('onmousedown');
-    }
-    onmousemove(e: MouseEvent) {
-        if (this.isDragging) {
-            let dest =
-                e.movementX + this.progressplayedRef.nativeElement.clientWidth;
-            let a =
-                (e.movementX / this.progressRef.nativeElement.clientWidth) *
-                this.playService.duration;
-            this.progressbarDragged.emit(a);
-            this.playService.seek(this.playService.currentTime + a);
-            console.log(this.playService.currentTime);
-        }
-    }
-    onmouseup(e: MouseEvent) {
-        this.isDragging = false;
-        // console.log('onmouseup');
-    }
-
-    onmouseout() {
-        this.isDragging = false;
-        // console.log('onmouseup');
     }
 }

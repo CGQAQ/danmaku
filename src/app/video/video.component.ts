@@ -62,10 +62,6 @@ export class VideoComponent implements OnInit {
         // console.log('playWaiting');
     }
 
-    onSeek(e) {
-        console.log(e);
-    }
-
     ngOnInit() {
         this.totalTime = this.videoEle.nativeElement.currentTime;
         this.playService.videoEle = this.videoEle.nativeElement;
