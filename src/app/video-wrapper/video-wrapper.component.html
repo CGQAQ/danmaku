@@ -1,11 +1,32 @@
-<app-video [videoSrc]="videoSrc"></app-video>
-
-<section *ngFor="let danmakus of danmakusPool" class="danmakuColumn">
-    <app-danmaku
-        *ngFor="let danmaku of danmakus"
-        (animationend)="animationEnd()"
-        [data]="danmaku"
-        [ongoing]="_danmakuOngoing"
-    >
-    </app-danmaku>
-</section>
+<app-video [videoSrc]="videoSrc">
+    <section *ngFor="let danmakus of _danmakusPool" class="danmakuColumn">
+        <app-danmaku
+            *ngFor="let danmaku of danmakus"
+            [data]="danmaku"
+            [ongoing]="_danmakuOngoing"
+            [dtype]="danmaku.getMode()"
+            (onended)="onended($event)"
+        >
+        </app-danmaku>
+    </section>
+    <section class="danmakuColumn" id="topDanmakuColumn">
+        <app-danmaku
+            *ngFor="let danmaku of _topDanmakuPool"
+            [data]="danmaku"
+            [ongoing]="_danmakuOngoing"
+            [dtype]="danmaku.getMode()"
+            (onended)="onended($event)"
+        >
+        </app-danmaku>
+    </section>
+    <section class="danmakuColumnReversed" id="bottomDanmakuColumn">
+        <app-danmaku
+            *ngFor="let danmaku of _bottomDanmakuPool"
+            [data]="danmaku"
+            [ongoing]="_danmakuOngoing"
+            [dtype]="danmaku.getMode()"
+            (onended)="onended($event)"
+        >
+        </app-danmaku>
+    </section>
+</app-video>

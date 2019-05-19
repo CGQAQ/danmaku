@@ -1,11 +1,13 @@
-<video
-    #videoElement
-    [src]="videoSrc"
-    (timeupdate)="ontimeupdate($event)"
-    (durationchange)="durationchange($event)"
-    (canplay)="canplay($event)"
-    controls
-></video>
+<div class="danmaku-wrapper">
+    <video
+        #videoElement
+        [src]="videoSrc"
+        (timeupdate)="ontimeupdate($event)"
+        (durationchange)="durationchange($event)"
+        (canplay)="canplay($event)"
+    ></video>
+    <ng-content></ng-content>
+</div>
 <app-video-controls
     #appVideoControls
     id="app-video-controls"

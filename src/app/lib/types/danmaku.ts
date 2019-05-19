@@ -12,6 +12,27 @@ export interface IBilibiliDanmaku {
     toString();
 }
 
+export enum DanmakuType {
+    TOP,
+    BOTTOM,
+    RTL,
+    LTR,
+    ABS,
+    SUP,
+    ERR = -1
+}
+
+export enum fontSizeType {
+    XXS,
+    XS,
+    S,
+    M,
+    L,
+    XL,
+    XXL,
+    ERR
+}
+
 export class BilibiliDanmaku implements IBilibiliDanmaku {
     constructor(
         public time,
@@ -24,6 +45,49 @@ export class BilibiliDanmaku implements IBilibiliDanmaku {
         public rowID,
         public content
     ) {}
+
+    getMode() {
+        switch (this.mode) {
+            case 1:
+            case 2:
+            case 3:
+                return DanmakuType.RTL;
+            case 4:
+                return DanmakuType.BOTTOM;
+            case 5:
+                return DanmakuType.TOP;
+            case 6:
+                return DanmakuType.LTR;
+            case 7:
+                return DanmakuType.ABS;
+            case 8:
+                return DanmakuType.SUP;
+            default:
+                return DanmakuType.ERR;
+        }
+    }
+
+    getFontSize() {
+        switch (this.fontSize) {
+            case 12:
+                return fontSizeType.XXS;
+            case 16:
+                return fontSizeType.XS;
+            case 18:
+                return fontSizeType.S;
+            case 25:
+                return fontSizeType.M;
+            case 36:
+                return fontSizeType.L;
+            case 45:
+                return fontSizeType.XL;
+            case 64:
+                return fontSizeType.XXL;
+            default:
+                return fontSizeType.ERR;
+        }
+    }
+
     toString() {
         function getMode(num) {
             switch (num) {
