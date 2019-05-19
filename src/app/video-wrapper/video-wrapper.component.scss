@@ -12,9 +12,12 @@
     top: 0;
     bottom: 0;
     z-index: 25;
+    overflow: hidden;
 }
 
 .danmakuColumnReversed{
     @extend .danmakuColumn;
+
     flex-direction: column-reverse;
+    overflow: hidden;
 }

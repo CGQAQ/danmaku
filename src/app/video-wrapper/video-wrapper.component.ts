@@ -33,7 +33,7 @@ export class VideoWrapperComponent implements OnInit {
         //     }
         // }
 
-        console.log(event);
+        // console.log(event);
 
         if (event == DanmakuType.TOP) {
             this._topDanmakuPool.splice(0, 1);
@@ -62,7 +62,7 @@ export class VideoWrapperComponent implements OnInit {
                 d.getMode() != DanmakuType.LTR &&
                 d.getMode() != DanmakuType.RTL
             ) {
-                console.log(`${d.getMode() + '来了'}`);
+                // console.log(`${d.getMode() + '来了'}`);
                 if (d.getMode() == DanmakuType.TOP) {
                     this._topDanmakuPool.push(d);
                 } else if (d.getMode() == DanmakuType.BOTTOM) {

@@ -61,7 +61,7 @@ export class DanmakuComponent implements OnInit, OnChanges {
         this._color = `#${this.data.fontColor.toString(16)}`;
         switch (this.data.getMode()) {
             case DanmakuType.RTL:
-                this._animation_duration = '8s';
+                this._animation_duration = `${10}s`;
                 this._animation_name = 'move-left';
                 this._animation_timing_function = 'linear';
                 this._left = '90vw';

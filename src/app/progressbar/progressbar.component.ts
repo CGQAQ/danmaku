@@ -85,9 +85,11 @@ export class ProgressbarComponent implements OnInit, OnChanges {
                     this.el.nativeElement.clientWidth -
                         this._progressThumbRef.nativeElement.clientWidth
             ) {
+                // @ts-ignore
+                // @ts-ignore
                 let len =
                     ev.clientX -
-                    this.el.nativeElement.getBoundingClientRect().x;
+                        this.el.nativeElement.getBoundingClientRect().left;
                 this._progressMainWidth = len;
                 this._progressThumbLeft = len;
                 this._value =
