@@ -1,54 +1,33 @@
 {
-  "name": "danmaku",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "concurrently --kill-others \"ng serve\" \"node ./server/index.js\"",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "~7.2.0",
-    "@angular/cdk": "~7.3.7",
-    "@angular/common": "~7.2.0",
-    "@angular/compiler": "~7.2.0",
-    "@angular/core": "~7.2.0",
-    "@angular/forms": "~7.2.0",
-    "@angular/material": "^7.3.7",
-    "@angular/platform-browser": "~7.2.0",
-    "@angular/platform-browser-dynamic": "~7.2.0",
-    "@angular/router": "~7.2.0",
-    "core-js": "^2.5.4",
-    "hammerjs": "^2.0.8",
-    "rxjs": "~6.3.3",
-    "tslib": "^1.9.0",
-    "xml-js": "^1.6.11",
-    "zone.js": "~0.8.26"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "~0.13.0",
-    "@angular/cli": "~7.3.9",
-    "@angular/compiler-cli": "~7.2.0",
-    "@angular/language-service": "~7.2.0",
-    "@types/jasmine": "~2.8.8",
-    "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
-    "codelyzer": "~4.5.0",
-    "concurrently": "^4.1.0",
-    "express": "^4.16.4",
-    "jasmine-core": "~2.99.1",
-    "jasmine-spec-reporter": "~4.2.1",
-    "karma": "~4.0.0",
-    "karma-chrome-launcher": "~2.2.0",
-    "karma-coverage-istanbul-reporter": "~2.0.1",
-    "karma-jasmine": "~1.1.2",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.4.0",
-    "ts-node": "~7.0.0",
-    "tslint": "~5.11.0",
-    "typescript": "~3.2.2"
-  }
+    "name": "danmaku",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint"
+    },
+    "dependencies": {
+        "core-js": "^2.6.5",
+        "vue": "^2.6.10",
+        "vue-class-component": "^7.0.2",
+        "vue-property-decorator": "^8.1.0",
+        "rxjs": "~6.3.3",
+        "xml-js": "^1.6.11"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.7.0",
+        "@vue/cli-plugin-eslint": "^3.7.0",
+        "@vue/cli-plugin-typescript": "^3.7.0",
+        "@vue/cli-service": "^3.7.0",
+        "@vue/eslint-config-standard": "^4.0.0",
+        "@vue/eslint-config-typescript": "^4.0.0",
+        "babel-eslint": "^10.0.1",
+        "eslint": "^5.16.0",
+        "eslint-plugin-vue": "^5.0.0",
+        "sass": "^1.18.0",
+        "sass-loader": "^7.1.0",
+        "typescript": "^3.4.3",
+        "vue-template-compiler": "^2.5.21"
+    }
 }
