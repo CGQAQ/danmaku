@@ -3,16 +3,18 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "serve": "vue-cli-service serve",
+        "serve": "concurrently --kill-others \"vue-cli-service serve\" \"node ./server/index.js\"",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
+        "concurrently": "^4.1.0",
         "core-js": "^2.6.5",
+        "express": "^4.17.0",
+        "rxjs": "~6.3.3",
         "vue": "^2.6.10",
         "vue-class-component": "^7.0.2",
         "vue-property-decorator": "^8.1.0",
-        "rxjs": "~6.3.3",
         "xml-js": "^1.6.11"
     },
     "devDependencies": {
