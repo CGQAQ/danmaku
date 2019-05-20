@@ -38,7 +38,7 @@ export class VideoControlsComponent implements OnInit {
                 : `url(../../assets/play.png)`;
         });
 
-        this.playService.volumeChange.subscribe(a => console.log(a));
+        // this.playService.volumeChange.subscribe(a => console.log(a));
     }
 
     onSeek(e) {
@@ -46,7 +46,7 @@ export class VideoControlsComponent implements OnInit {
     }
 
     onVolumeChange(e) {
-        console.log(e)
+        // console.log(e)
         if (e === undefined || e === null) {
             return;
         } else if (e <= 100 && e >= 0) {

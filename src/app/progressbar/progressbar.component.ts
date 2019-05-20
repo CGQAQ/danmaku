@@ -8,7 +8,7 @@ import {
     ElementRef,
     HostListener,
     EventEmitter,
-    OnChanges
+    OnChanges, SimpleChanges
 } from '@angular/core';
 
 @Component({
@@ -52,23 +52,27 @@ export class ProgressbarComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         if (this.value) this._value = this.value;
-        if (this.value) this._value = this.value;
     }
 
-    ngOnChanges() {
+    ngOnChanges(changes: SimpleChanges): void {
         this._value = this.value;
         this._progressMainWidth =
-            (this.value / this.max) *
+            (this._value / this.max) *
             (this.el.nativeElement.clientWidth -
                 this._progressThumbRef.nativeElement.clientWidth);
         this._progressThumbLeft =
-            (this.value / this.max) *
+            (this._value / this.max) *
             (this.el.nativeElement.clientWidth -
                 this._progressThumbRef.nativeElement.clientWidth);
     }
 
+
     onmousedown() {
         this._isHolding = true;
+    }
+
+    minmax(a, max, min) {
+        return Math.max(Math.min(a, max), min);
     }
 
     @HostListener('document:mousemove', ['$event'])
@@ -78,47 +82,61 @@ export class ProgressbarComponent implements OnInit, OnChanges {
         // ev.movementX / this._elWidth
         const progressMainWidth = this._progressMainRef.nativeElement
             .clientWidth;
+        const thumbPosition = this._progressThumbLeft;
+
         if (this._isHolding) {
+
             if (
-                progressMainWidth >= 0 &&
-                progressMainWidth <=
+                thumbPosition >= 0 &&
+                thumbPosition <=
                     this.el.nativeElement.clientWidth -
                         this._progressThumbRef.nativeElement.clientWidth
             ) {
-                // @ts-ignore
-                // @ts-ignore
-                let len =
-                    ev.clientX -
-                        this.el.nativeElement.getBoundingClientRect().left;
-                this._progressMainWidth = len;
-                this._progressThumbLeft = len;
+                // console.log(thumbPosition, this.el.nativeElement.clientWidth -
+                //     this._progressThumbRef.nativeElement.clientWidth);
+
+                const len = this.minmax((ev.clientX -
+                    this.el.nativeElement.getBoundingClientRect().left), this.el.nativeElement.clientWidth, 0);
+                // this._progressMainWidth = len;
+                // this._progressThumbLeft = len;
                 this._value =
                     (len / this.el.nativeElement.clientWidth) *
                     (this.max - this.min);
-            } else if (progressMainWidth < 0) {
-                this._progressMainWidth = 0;
-                this._progressThumbLeft = 0;
-                this._value = this.min;
-            } else if (
-                progressMainWidth >
-                this.el.nativeElement.clientWidth -
-                    this._progressThumbRef.nativeElement.clientWidth
-            ) {
-                this._progressMainWidth =
-                    this.el.nativeElement.clientWidth -
-                    this._progressThumbRef.nativeElement.clientWidth;
-                this._progressThumbLeft =
-                    this.el.nativeElement.clientWidth -
-                    this._progressThumbRef.nativeElement.clientWidth;
-                this._value = this.max;
+                this.valueChange.emit(this._value);
             }
+            // } else if (thumbPosition < 0) {
+            //     this._progressMainWidth = 0;
+            //     this._progressThumbLeft = 0;
+            //     this._value = this.min;
+            // } else if (
+            //     thumbPosition >
+            //     this.el.nativeElement.clientWidth -
+            //         this._progressThumbRef.nativeElement.clientWidth
+            // ) {
+            //     this._progressMainWidth =
+            //         this.el.nativeElement.clientWidth -
+            //         this._progressThumbRef.nativeElement.clientWidth;
+            //     this._progressThumbLeft =
+            //         this.el.nativeElement.clientWidth -
+            //         this._progressThumbRef.nativeElement.clientWidth;
+            //     this._value = this.max;
+            // }
 
             // console.log(
             //     this._value,
             //     this.el.nativeElement.clientWidth,
             //     this.max
             // );
-            this.valueChange.emit(this._value);
+
+            this._progressMainWidth =
+                (this._value / this.max) *
+                (this.el.nativeElement.clientWidth -
+                    this._progressThumbRef.nativeElement.clientWidth);
+            this._progressThumbLeft =
+                (this._value / this.max) *
+                (this.el.nativeElement.clientWidth -
+                    this._progressThumbRef.nativeElement.clientWidth);
+
         }
         return false;
     }
