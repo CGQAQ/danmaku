@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Observable, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BilibiliDanmaku } from './types/danmaku';
@@ -8,7 +10,7 @@ export class DanmakuHandler {
 
     constructor(private danmakus: BilibiliDanmaku[]) {}
 
-    private search(source, number) {
+    private search(source: BilibiliDanmaku[] | { time: number; }[], number: number) {
         let index = 0,
             last = 0;
         for (let i = 0; i < source.length; i++) {
