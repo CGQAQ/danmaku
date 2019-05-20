@@ -12,4 +12,10 @@
         (click)="btnPlayClick()"
     ></button>
     <app-danmaku-input></app-danmaku-input>
+    <app-progressbar
+        id="volumeControl"
+        [max]="100"
+        [value]="50"
+        (valueChange)="onVolumeChange($event)"
+    ></app-progressbar>
 </div>

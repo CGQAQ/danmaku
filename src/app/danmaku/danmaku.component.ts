@@ -58,7 +58,7 @@ export class DanmakuComponent implements OnInit, OnChanges {
     constructor() {}
 
     ngOnInit() {
-        this._color = `#${this.data.fontColor.toString(16)}`;
+        this._color = `#${(+this.data.fontColor).toString(16)}`;
         switch (this.data.getMode()) {
             case DanmakuType.RTL:
                 this._animation_duration = `${10}s`;

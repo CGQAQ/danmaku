@@ -1,18 +1,5 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    OnChanges,
-    EventEmitter,
-    Output,
-    ChangeDetectorRef,
-    SimpleChanges,
-    ElementRef,
-    ViewChild,
-    HostListener
-} from '@angular/core';
-import { NgStyle } from '@angular/common';
-import { PlayService } from '../services/play-service.service';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {PlayService} from '../services/play-service.service';
 
 @Component({
     selector: 'app-video-controls',
@@ -23,7 +10,7 @@ export class VideoControlsComponent implements OnInit {
     @Input() videoTotalTime: number;
     @Input() videoTime: number;
 
-    isDragging: boolean = false;
+    _isDragging: boolean = false;
     _isPlaying: boolean = false;
 
     public get isPlaying(): boolean {
@@ -40,7 +27,8 @@ export class VideoControlsComponent implements OnInit {
     constructor(
         private playService: PlayService,
         private cdr: ChangeDetectorRef
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.playService.isPlaying.subscribe(b => {
@@ -49,10 +37,25 @@ export class VideoControlsComponent implements OnInit {
                 ? `url(../../assets/pause.png)`
                 : `url(../../assets/play.png)`;
         });
+
+        this.playService.volumeChange.subscribe(a => console.log(a));
     }
 
     onSeek(e) {
-        this.playService.seek(e)
+        this.playService.seek(e);
+    }
+
+    onVolumeChange(e) {
+        console.log(e)
+        if (e === undefined || e === null) {
+            return;
+        } else if (e <= 100 && e >= 0) {
+            this.playService.ajustVolume(e);
+        } else if (e > 100) {
+            this.playService.ajustVolume(100);
+        } else if (e < 0) {
+            this.playService.ajustVolume(0);
+        }
     }
 
     btnPlayClick() {

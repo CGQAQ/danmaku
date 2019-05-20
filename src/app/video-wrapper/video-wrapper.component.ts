@@ -80,7 +80,7 @@ export class VideoWrapperComponent implements OnInit {
                     Math.abs(
                         this._danmakusPool[this._danmakusPool.length - 1][0]
                             .time - d.time
-                    ) < 1
+                    ) < 1.5
                 ) {
                     this._danmakusPool[this._danmakusPool.length - 1].push(d);
                 } else {

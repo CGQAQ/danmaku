@@ -29,10 +29,10 @@ export class ProgressbarComponent implements OnInit, OnChanges {
 
     @Output() valueChange: EventEmitter<number> = new EventEmitter();
 
-    @HostBinding('style.width')
-    private _width: string = '100%';
-    @HostBinding('style.height')
-    private _height: string = '100%';
+    // @HostBinding('style.width')
+    // private _width: string = '100%';
+    // @HostBinding('style.height')
+    // private _height: string = '100%';
     _progressStyle = {};
     _progressMainStyle = {};
     _progressSecondaryStyle = {};

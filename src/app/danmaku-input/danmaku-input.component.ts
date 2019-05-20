@@ -37,8 +37,27 @@ export class DanmakuInputComponent implements OnInit {
             0,
             this._value
         );
-        console.log(data)
+        // console.log(data)
 
         this.danmakuService.danmakuMachine.send(data);
+        this._value = '';
+    }
+
+    onEnterClick() {
+        const data = new BilibiliDanmaku(
+            Math.floor(Date.now() / 1000),
+            DanmakuType.RTL,
+            36,
+            0xFFFFFF.toString(10),
+            Math.floor(Date.now() / 1000),
+            0,
+            0,
+            0,
+            this._value
+        );
+        // console.log(data)
+
+        this.danmakuService.danmakuMachine.send(data);
+        this._value = '';
     }
 }

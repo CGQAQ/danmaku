@@ -9,6 +9,7 @@ export class PlayService {
     private _videoEle: HTMLVideoElement;
     private _isPlaying: Subject<boolean> = new Subject();
     private _timeChange: Observable<number>;
+    private _volumeChange: Observable<number>;
     private _duration: number;
     private _currentTime: number;
 
@@ -23,6 +24,10 @@ export class PlayService {
         this._timeChange = fromEvent(v, 'timeupdate').pipe(
             map(_ => v.currentTime)
         );
+        this._volumeChange = fromEvent(v, 'volumechange').pipe(
+            map(_ => v.volume * 100)
+        )
+
         v.onloadedmetadata = () => {
             this._duration = v.duration;
         };
@@ -47,6 +52,10 @@ export class PlayService {
         }
     }
 
+    public ajustVolume(to: number) {
+        this._videoEle.volume = to / 100;
+    }
+
     public play() {
         this.videoEle.play();
     }
@@ -58,6 +67,11 @@ export class PlayService {
     public get timeChange(): Observable<number> {
         return this._timeChange;
     }
+
+    public get volumeChange(): Observable<number> {
+        return this._volumeChange;
+    }
+
 
     public get duration() {
         return this._duration;
