@@ -1,20 +1,26 @@
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
-import { DanmakuType } from '../lib/types/danmaku'
 <template>
   <section class="video-wrapper">
-    <video src="http://localhost:9774/video" @timeupdate="timeChange" controls></video>
-    <section class="danmaku-column" v-for="(dColumn, i) in  normalDanmakuPool" :key="i">
+    <video
+      src="http://localhost:9774/video"
+      @timeupdate="timeChange"
+      @play="onPlay"
+      @playing="onPlay"
+      @waiting="onWaiting"
+      @pause="onPause"
+      controls
+    >
+
+    </video>
+    <section
+      class="danmaku-column"
+      v-for="(dColumn, i) in  normalDanmakuPool"
+      :key="i"
+    >
       <Danmaku
         v-for="(d) in dColumn"
         :key="d.rowID"
         :data="d"
+        :ongoing="ongoing"
         @onAnimationEnd="onDanmakuShouldRemove"
       />
     </section>
@@ -23,6 +29,7 @@ import { DanmakuType } from '../lib/types/danmaku'
         v-for="(item) in topDanmakuPool"
         :data="item"
         :key="item.rowID"
+        :ongoing="ongoing"
         @onAnimationEnd="onDanmakuShouldRemove"
       />
     </section>
@@ -31,6 +38,7 @@ import { DanmakuType } from '../lib/types/danmaku'
         v-for="(item) in bottomDanmakuPool"
         :data="item"
         :key="item.rowID"
+        :ongoing="ongoing"
         @onAnimationEnd="onDanmakuShouldRemove"
       />
     </section>
@@ -54,6 +62,7 @@ import { DanmakuType } from '../lib/types/danmaku'
     topDanmakuPool = Array<BilibiliDanmaku>();
     bottomDanmakuPool = Array<BilibiliDanmaku>();
     normalDanmakuPool = Array<BilibiliDanmaku[]>();
+    ongoing = true;
 
 
     mounted() {
@@ -86,6 +95,18 @@ import { DanmakuType } from '../lib/types/danmaku'
 
     timeChange(ev: Event) {
       this.danmakuMachine.currentTime = (ev.target as HTMLVideoElement).currentTime
+    }
+
+    onPlay() {
+      this.ongoing = true
+    }
+
+    onPause() {
+      this.ongoing = false
+    }
+
+    onWaiting() {
+      this.ongoing = false
     }
 
     onDanmakuShouldRemove(data: {id: string, mode: DanmakuType}){
@@ -121,6 +142,7 @@ import { DanmakuType } from '../lib/types/danmaku'
   .danmaku-column {
     display: flex;
     flex-direction: column;
+    align-items: center;
     position: absolute;
     /*top: 0;*/
     width: 100%;
