@@ -48,7 +48,7 @@ export class BilibiliDanmaku implements IBilibiliDanmaku {
         public content: string
   ) {}
 
-  getMode() {
+  getDanmakuType() {
     switch (this.mode) {
       case 1:
       case 2:
