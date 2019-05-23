@@ -8,6 +8,10 @@
   import Component from 'vue-class-component'
   import Vue from 'vue'
   import VideoWrapper from "@/components/VideoWrapper.vue"
+  import GlobalEvents from 'vue-global-events'
+
+
+  Vue.component('GlobalEvents', GlobalEvents)
 
   @Component({
     components: {VideoWrapper}

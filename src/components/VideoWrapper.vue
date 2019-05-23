@@ -42,6 +42,7 @@
         @onAnimationEnd="onDanmakuShouldRemove"
       />
     </section>
+    <VideoControlbar />
   </section>
 </template>
 
@@ -50,10 +51,11 @@
   import {DanmakuMachine} from '@/lib/danmakuMachine'
   import {BilibiliDanmaku, DanmakuType} from '@/lib/types/danmaku'
   import Danmaku from "@/components/Danmaku.vue"
+  import VideoControlbar from "@/components/VideoControlbar.vue"
 
   @Component({
     name: 'Video-wrapper',
-    components: {Danmaku}
+    components: {VideoControlbar, Danmaku}
   })
   export default class VideoWrapper extends Vue{
     readonly danmakuMachine = new DanmakuMachine(undefined, undefined, 'http://localhost:9774/danmaku')
@@ -144,7 +146,7 @@
     flex-direction: column;
     align-items: center;
     position: absolute;
-    /*top: 0;*/
+    top: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
