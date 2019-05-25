@@ -1,8 +1,14 @@
 <template>
   <section class="video-wrapper" ref="videoWrapper">
-    <section class="danmaku-wrapper">
+    <GlobalEvents
+      @mousemove="onMousemove"
+    />
+    <section
+      class="danmaku-wrapper"
+      :style="{width: wrapperWidth}"
+    >
       <video
-        src="http://localhost:9774/video"
+        :src="videoURL"
         ref="video"
         @timeupdate="timeChange"
         @loadedmetadata="loadedmetadata"
@@ -11,7 +17,6 @@
         @playing="onPlay"
         @waiting="onWaiting"
         @pause="onPause"
-        controls
       >
 
       </video>
@@ -49,18 +54,23 @@
     </section>
     <VideoControlbar
       :currentTime="currentTime"
+      :loaded="loaded"
       :duration="totalTime"
       :playState="ongoing"
+      :isFullscreen="isFullscreen"
+      :style="{width: controlbarWidth}"
+      v-show="showControlbar"
       @btnPlayClicked="btnPlayClicked"
       @timeChanged="dragged"
       @volumeChanged="volumeChanged"
       @reqFullScreen="reqFullScreen"
+      @danmakuInputValueChanged="danmakuInputValueChanged"
     />
   </section>
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator'
+  import {Component, Vue, Prop} from 'vue-property-decorator'
   import {DanmakuMachine} from '@/lib/danmakuMachine'
   import {BilibiliDanmaku, DanmakuType} from '@/lib/types/danmaku'
   import Danmaku from "@/components/Danmaku.vue"
@@ -71,8 +81,15 @@
     components: {VideoControlbar, Danmaku}
   })
   export default class VideoWrapper extends Vue{
-    readonly danmakuMachine = new DanmakuMachine(undefined, undefined, 'http://localhost:9774/danmaku')
+    danmakuMachine: DanmakuMachine|null = null
     readonly threshold = 1.5
+
+    @Prop({type: String, default: '', required: true}) //
+    videoURL
+
+    @Prop({type: String, default: '', required: true})
+    danmakuURL
+
 
     topDanmakuPool = Array<BilibiliDanmaku>();
     bottomDanmakuPool = Array<BilibiliDanmaku>();
@@ -82,8 +99,17 @@
     currentTime: number = 0;
     totalTime: number = 0;
 
+    loaded: number = 0;
+
+    isFullscreen = false
+
+    wrapperWidth = '100%'
+    controlbarWidth: string = 'auto';
+
 
     mounted() {
+      this.danmakuMachine = new DanmakuMachine(undefined, undefined, this.danmakuURL);
+
       this.danmakuMachine.danmakuStream.subscribe((danmaku: BilibiliDanmaku) => {
         const mode = danmaku.getDanmakuType()
         if (mode !== DanmakuType.LTR && mode !== DanmakuType.RTL) {
@@ -108,6 +134,12 @@
             }
           }
         }
+      });
+
+      (this.$refs.video as HTMLVideoElement).addEventListener('progress', (e: Event)=> {
+        const videoEl = e.target as HTMLVideoElement
+        this.loaded = videoEl.buffered.end(0)
+        console.log(this.loaded, this.totalTime)
       })
     }
 
@@ -150,7 +182,15 @@
     }
 
     reqFullScreen(ev: boolean) {
-      (this.$refs.videoWrapper as HTMLElement).requestFullscreen()
+      const ele =  (this.$refs.videoWrapper as HTMLElement)
+      if(!document.fullscreenElement){
+        ele.requestFullscreen().then(() => this.isFullscreen = true)
+        this.wrapperWidth = '100vw'
+      }
+      else{
+        document.exitFullscreen().then(() => this.isFullscreen = false)
+        this.wrapperWidth = '100%'
+      }
     }
 
     onPlay() {
@@ -187,6 +227,37 @@
         }
       }
     }
+
+
+    danmakuValue = ''
+    onTyping = false;
+    danmakuInputValueChanged(ev: string){
+      this.danmakuValue = ev
+      if(ev.length !== 0){
+        this.onTyping = true
+      } else {
+        this.onTyping = false
+      }
+    }
+
+
+    showControlbar = false;
+    timeoutID: number|null = null
+    onMousemove(){
+      if(!this.timeoutID) {
+        this.showControlbar = true
+        this.timeoutID = setTimeout(() => {
+          if(!this.onTyping){
+            this.timeoutID = null;
+            this.showControlbar = false;
+          }
+          else {
+              this.timeoutID = null;
+              this.onMousemove();
+          }
+        }, 2000)
+      }
+    }
   }
 </script>
 
@@ -194,12 +265,18 @@
   .video-wrapper {
     /*position: relative;*/
     display: grid;
-    grid-template-rows: auto auto;
-    grid-row-gap: 1rem;
+    grid-template-rows: auto;
+    position: relative;
+    justify-items: center;
+    width: 75vw;
+    height: 70vh;
   }
 
   video {
-    display: block; /** prevent extra space of bottom */
+    display: inline-block; /** prevent extra space of bottom */
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
   }
 
   .danmaku-wrapper {
@@ -221,4 +298,5 @@
     @extend .danmaku-column;
     flex-direction: column-reverse;
   }
+
 </style>

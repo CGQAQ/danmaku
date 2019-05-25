@@ -24,9 +24,11 @@
       ongoing: Boolean
     },
   })
-  export default class extends Vue {
+  export default class Danmaku extends Vue {
     color: string = "#FFFFFF";
     animation: string = "";
+
+    $style
 
     mounted(){
       let data = this.$props.data as BilibiliDanmaku

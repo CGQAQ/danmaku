@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <video-wrapper/>
+    <video-wrapper
+      videoURL="http://localhost:9774/video"
+      danmakuURL="http://localhost:9774/danmaku"
+    />
   </div>
 </template>
 
@@ -55,5 +58,8 @@
     display: grid;
     place-content: center;
     height: 100vh;
+    background-image: url(https://picsum.photos/1920/1080);
+    background-repeat: no-repeat;
+    background-size: auto;
   }
 </style>

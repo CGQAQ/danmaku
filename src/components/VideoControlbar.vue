@@ -4,6 +4,7 @@
       <Slider
         :value="currentTime"
         :max="duration"
+        :secondaryValue="loaded"
         @valueChanged="valueChanged"
       />
     </section>
@@ -15,6 +16,11 @@
       >
         {{btnPlayContent}}
       </button>
+
+      <section id="video-time" style="color: #FF0000;">
+        {{`${new Date(currentTime * 1000).toISOString().substr(14,5)}`}}
+      </section>
+
       <section id="danmaku-input">
         <input
           id="input-danmaku"
@@ -29,16 +35,25 @@
           @valueChanged="volumeChanged"
         />
       </section>
+      <section id="video-totaltime" style="color: #FF0000;">
+        {{`${new Date(duration * 1000).toISOString().substr(14,5)}`}}
+      </section>
       <section id="video-fullscreen">
-        <button id="button-video-fullscreen" class="material-icons" @click="reqFullscreen">fullscreen</button>
+        <button
+          id="button-video-fullscreen"
+          class="material-icons"
+          @click="reqFullscreen"
+        >
+          {{isFullscreen?'fullscreen_exit':'fullscreen'}}
+        </button>
       </section>
     </section>
   </section>
 </template>
 
 <script lang="ts">
-  import Slider from '@/components/Slider'
-  import { Component, Vue, Prop} from 'vue-property-decorator'
+  import Slider from './Slider.vue'
+  import {Component, Vue, Prop, Watch} from 'vue-property-decorator'
 
   @Component({
     name: 'VideoControlbar',
@@ -53,12 +68,23 @@
     @Prop({type: Number, required: true})
     duration
 
+    @Prop({type: Number, required: true})
+    loaded
+
     @Prop({type: Boolean, required: true})
     playState
+
+    @Prop({type: Boolean, required: true})
+    isFullscreen
 
     btnPlayContent = 'play_arrow'
 
     iptDanmakuContent = '';
+
+    @Watch('iptDanmakuContent')
+    danmakuInputValueChanged(){
+      this.$emit('danmakuInputValueChanged', this.iptDanmakuContent)
+    }
 
     volume: number = 0.5
 
@@ -92,7 +118,9 @@
     display: grid;
     grid-template-rows: 2fr 3fr;
     height: 4rem;
-    /*position: relative;*/
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
   }
 
   #video-controller-top {
@@ -100,17 +128,21 @@
   }
 
   #video-controller-bottom {
-    background-color: cyan;
+    background-color: #33333355;
+
     display: grid;
-    grid-template-columns: 1fr 5fr 2fr 0.5fr;
+    grid-template-columns: 1fr 1fr 5fr 2fr 0.5fr 0.5fr;
     justify-content: space-between;
     align-items: center;
     justify-items: center;
   }
 
   #btn-play {
-    width: 4rem;
     height: 100%;
+  }
+
+  #video-time {
+
   }
 
   #danmaku-input {
@@ -144,4 +176,6 @@
     height: 75%;
     width: 100%;
   }
+
+
 </style>
