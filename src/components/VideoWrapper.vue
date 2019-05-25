@@ -179,6 +179,9 @@ export default class VideoWrapper extends Vue {
     }
 
     dragged(ev: number) {
+        this.topDanmakuPool = [];
+        this.bottomDanmakuPool = [];
+        this.normalDanmakuPool = [];
         (this.$refs.video as HTMLVideoElement).currentTime = ev;
     }
 
