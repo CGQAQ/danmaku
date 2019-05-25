@@ -1,5 +1,8 @@
 <template>
-  <section id="--slider-wrapper" ref="sliderWrapper">
+  <section
+    id="--slider-wrapper"
+    ref="sliderWrapper"
+  >
     <GlobalEvents
       @mouseleave="mouseleave"
       @mousemove="mousemove"
@@ -26,21 +29,23 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { Component, Prop } from 'vue-property-decorator'
+  import { Component, Prop, Watch } from 'vue-property-decorator'
 
-  @Component
+  @Component({
+    name: 'Slider'
+  })
   export default class Slider extends Vue{
     @Prop({type: Number, required: false, default: () => 0})
-    min: number = 0
+    min: number
 
     @Prop({type: Number, required: false, default: () => 100})
-    max: number = 100
+    max: number
 
     @Prop({type: Number, required: false, default: () => 0})
-    value: number = 0
+    value: number
 
     @Prop({type: Number, required: false, default: () => 0})
-    secondaryValue: number = 0
+    secondaryValue: number
 
     value_: number = 0;
 
@@ -48,31 +53,49 @@
 
     isConcerned_: boolean = false;
 
+    getWrapperWidth(){
+      const sliderWrapper = this.$refs.sliderWrapper as HTMLElement
+      if(!sliderWrapper) return 0;
+      else return sliderWrapper.clientWidth;
+    }
+
+    getThumbWidth(){
+      const sliderThumb = this.$refs.sliderThumb as HTMLElement
+      if(!sliderThumb) return 0;
+      else return sliderThumb.clientWidth;
+    }
 
     get mainWidth() {
-      console.log(this.value_)
-      if(!this.$refs.sliderMain) return '0px';
+      // I'm totally an idiot!
+      // if(!this.$refs.sliderMain) return '0px';
+      // console.log(this.value_, this.max-this.min, this.getWrapperWidth()-this.getThumbWidth())
+
       return ( this.value_ / (this.max - this.min) )
-        * (this.$refs.sliderWrapper as HTMLDivElement).clientWidth + 'px';
+        * (this.getWrapperWidth() - this.getThumbWidth())
+        / this.getWrapperWidth()
+        * 100 + '%';
     }
 
     get secondaryWidth() {
-      if(!this.$refs.sliderSecondary) return '0px';
-      return ( this.value_ / (this.max-this.min) )
-        * (this.$refs.sliderWrapper as HTMLDivElement).clientWidth + 'px';
+      return ( this.value_ / (this.max-this.min) ) + '%';
     }
 
     get thumbLeft() {
-      // 注意看这里！！！！！！！！！！
-      // console.log(this.value_)
+      return ( this.value_ / (this.max - this.min) )
+        * (this.getWrapperWidth() - this.getThumbWidth())
+        / this.getWrapperWidth()
+        * 100 + '%';
+    }
 
-      if(!this.$refs.sliderThumb) return '0px';
-      return ( this.value_ / (this.max-this.min) )
-        * (this.$refs.sliderWrapper as HTMLDivElement).clientWidth + 'px';
+    @Watch('value')
+    valueChanged(val: number){
+      this.value_ = val
     }
 
     mounted() {
-      console.log(this.mainWidth, (this.$refs.sliderMain as HTMLDivElement).clientWidth)
+      this.value_ = this.value;
+
+      this.$forceUpdate()
     }
 
 
@@ -84,18 +107,17 @@
     mousemove(ev: MouseEvent){
       ev.preventDefault()
       if(this.isConcerned_){
-        let x = ev.clientX - (this.$refs.sliderWrapper as HTMLElement).getBoundingClientRect().left
-        const width = (this.$refs.sliderWrapper as HTMLElement).clientWidth
+        let x = ev.clientX - (this.$refs.sliderWrapper as HTMLElement).getBoundingClientRect().left - this.getThumbWidth() / 2
         if(x < 0) x = 0;
-        if(x > width) x = width;
-        this.value_ = (x / width) * (this.max - this.min)
+        if(x > this.getWrapperWidth() - this.getThumbWidth()) x = this.getWrapperWidth() - this.getThumbWidth();
+        this.value_ = (x / (this.getWrapperWidth() - this.getThumbWidth())) * (this.max - this.min)
+        this.$emit('valueChanged', this.value_)
       }
     }
 
     mouseup(ev: Event){
       ev.preventDefault()
       this.isConcerned_ = false;
-      console.log(this.isConcerned_)
     }
 
     mouseleave(ev: Event){

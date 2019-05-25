@@ -1,8 +1,12 @@
 <template>
   <section
     class="danmaku-wrapper"
-    :style="{color: color, 'animation-play-state': this.$props.ongoing? 'running': 'paused'}"
-    :class="[animationClass]"
+    :style="{
+      color: color,
+      'animation-play-state': this.$props.ongoing? 'running': 'paused',
+      animation: animation
+    }"
+
     @animationcancel="onAnimationEnd"
     @animationend="onAnimationEnd"
   >
@@ -19,22 +23,19 @@
       data: BilibiliDanmaku,
       ongoing: Boolean
     },
-    methods: {
-
-    }
   })
   export default class extends Vue {
     color: string = "#FFFFFF";
-    animationClass: string = "danmaku-rtl";
+    animation: string = "";
 
     mounted(){
       let data = this.$props.data as BilibiliDanmaku
       this.color = `#${(+(data).fontColor).toString(16)}`
       if(data.getDanmakuType() === DanmakuType.RTL){
-        this.animationClass = "danmaku-rtl"
+        this.animation = `${this.$style['move-left']} linear 10s`
       }
       else if(data.getDanmakuType() === DanmakuType.TOP || data.getDanmakuType() === DanmakuType.BOTTOM){
-        this.animationClass = "danmaku-md"
+        this.animation = `${this.$style['to-disappear']} linear 5s`
       }
     }
 
@@ -50,7 +51,7 @@
   }
 </script>
 
-<style scoped>
+<style module>
   @keyframes move-left {
     from {
       transform: translateX(100vw);
@@ -60,6 +61,14 @@
     }
   }
 
+  @keyframes to-disappear {
+    to{
+      display: none;
+    }
+  }
+</style>
+
+<style scoped>
   .danmaku-wrapper{
     font-weight: bold;
     text-shadow: rgb(0, 0, 0) 1px 0px 1px, rgb(0, 0, 0) 0px 1px 1px,
@@ -67,13 +76,4 @@
     font-size: 1.2rem;
     line-height: 1.2rem;
   }
-
-  .danmaku-rtl {
-    animation: move-left linear 10s;
-  }
-
-  .danmaku-md {
-    animation: ease-in linear 5s;
-  }
-
 </style>

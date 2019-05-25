@@ -46,6 +46,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  * {
+    margin: 0;
+    padding: 0;
+  }
 
   #app {
     display: grid;

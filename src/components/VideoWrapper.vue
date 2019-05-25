@@ -1,48 +1,61 @@
 <template>
-  <section class="video-wrapper">
-    <video
-      src="http://localhost:9774/video"
-      @timeupdate="timeChange"
-      @play="onPlay"
-      @playing="onPlay"
-      @waiting="onWaiting"
-      @pause="onPause"
-      controls
-    >
+  <section class="video-wrapper" ref="videoWrapper">
+    <section class="danmaku-wrapper">
+      <video
+        src="http://localhost:9774/video"
+        ref="video"
+        @timeupdate="timeChange"
+        @loadedmetadata="loadedmetadata"
+        @durationchange="durationChanged"
+        @play="onPlay"
+        @playing="onPlay"
+        @waiting="onWaiting"
+        @pause="onPause"
+        controls
+      >
 
-    </video>
-    <section
-      class="danmaku-column"
-      v-for="(dColumn, i) in  normalDanmakuPool"
-      :key="i"
-    >
-      <Danmaku
-        v-for="(d) in dColumn"
-        :key="d.rowID"
-        :data="d"
-        :ongoing="ongoing"
-        @onAnimationEnd="onDanmakuShouldRemove"
-      />
+      </video>
+      <section
+        class="danmaku-column"
+        v-for="(dColumn, i) in  normalDanmakuPool"
+        :key="i"
+      >
+        <Danmaku
+          v-for="(d) in dColumn"
+          :key="d.rowID"
+          :data="d"
+          :ongoing="ongoing"
+          @onAnimationEnd="onDanmakuShouldRemove"
+        />
+      </section>
+      <section class="danmaku-column">
+        <Danmaku
+          v-for="(item) in topDanmakuPool"
+          :data="item"
+          :key="item.rowID"
+          :ongoing="ongoing"
+          @onAnimationEnd="onDanmakuShouldRemove"
+        />
+      </section>
+      <section class="danmaku-column-reversed">
+        <Danmaku
+          v-for="(item) in bottomDanmakuPool"
+          :data="item"
+          :key="item.rowID"
+          :ongoing="ongoing"
+          @onAnimationEnd="onDanmakuShouldRemove"
+        />
+      </section>
     </section>
-    <section class="danmaku-column">
-      <Danmaku
-        v-for="(item) in topDanmakuPool"
-        :data="item"
-        :key="item.rowID"
-        :ongoing="ongoing"
-        @onAnimationEnd="onDanmakuShouldRemove"
-      />
-    </section>
-    <section class="danmaku-column-reversed">
-      <Danmaku
-        v-for="(item) in bottomDanmakuPool"
-        :data="item"
-        :key="item.rowID"
-        :ongoing="ongoing"
-        @onAnimationEnd="onDanmakuShouldRemove"
-      />
-    </section>
-    <VideoControlbar />
+    <VideoControlbar
+      :currentTime="currentTime"
+      :duration="totalTime"
+      :playState="ongoing"
+      @btnPlayClicked="btnPlayClicked"
+      @timeChanged="dragged"
+      @volumeChanged="volumeChanged"
+      @reqFullScreen="reqFullScreen"
+    />
   </section>
 </template>
 
@@ -64,7 +77,10 @@
     topDanmakuPool = Array<BilibiliDanmaku>();
     bottomDanmakuPool = Array<BilibiliDanmaku>();
     normalDanmakuPool = Array<BilibiliDanmaku[]>();
-    ongoing = true;
+    ongoing = false;
+
+    currentTime: number = 0;
+    totalTime: number = 0;
 
 
     mounted() {
@@ -95,8 +111,46 @@
       })
     }
 
+    loadedmetadata(ev: Event){
+      const duration = (ev.target as HTMLVideoElement).duration
+      this.totalTime = duration
+      this.currentTime = 0
+    }
+
+    durationChanged(ev: Event){
+      const duration = (ev.target as HTMLVideoElement).duration
+      this.totalTime = duration
+      this.currentTime = 0
+    }
+
     timeChange(ev: Event) {
-      this.danmakuMachine.currentTime = (ev.target as HTMLVideoElement).currentTime
+      const time = (ev.target as HTMLVideoElement).currentTime
+      this.danmakuMachine.currentTime = time
+      this.currentTime = time
+    }
+
+    volumeChanged(ev: number){
+      (this.$refs.video as HTMLVideoElement).volume = ev
+    }
+
+    dragged(ev: number) {
+      (this.$refs.video as HTMLVideoElement).currentTime = ev
+    }
+
+    btnPlayClicked(ev: boolean){
+      const video = this.$refs.video as HTMLVideoElement
+      if(ev){
+        video.play()
+        this.ongoing = true
+      }
+      else {
+        video.pause()
+        this.ongoing = false
+      }
+    }
+
+    reqFullScreen(ev: boolean) {
+      (this.$refs.videoWrapper as HTMLElement).requestFullscreen()
     }
 
     onPlay() {
@@ -112,7 +166,7 @@
     }
 
     onDanmakuShouldRemove(data: {id: string, mode: DanmakuType}){
-      // console.log(this.normalDanmakuPool)
+      // console.log(this.topDanmakuPool, data.id, data.mode, DanmakuType.TOP)
       if(data.mode !== DanmakuType.RTL && data.mode !== DanmakuType.LTR){
         if(data.mode === DanmakuType.TOP){
           const index = this.topDanmakuPool.findIndex(d => d.rowID === data.id)
@@ -138,6 +192,17 @@
 
 <style scoped lang="scss">
   .video-wrapper {
+    /*position: relative;*/
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-row-gap: 1rem;
+  }
+
+  video {
+    display: block; /** prevent extra space of bottom */
+  }
+
+  .danmaku-wrapper {
     position: relative;
   }
 
