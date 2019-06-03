@@ -1,5 +1,7 @@
 # danmaku
 
+![screenshot](https://github.com/CGQAQ/danmaku/blob/master/docs/assets/g%232.jpg)
+
 ## Project setup
 ```
 npm install
